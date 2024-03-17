@@ -38,9 +38,6 @@ jobs:
           cd terraform
           terraform apply -auto-approve tfplan | tee output.txt
           echo "::set-output name=postgres_endpoint::$(terraform output -raw postgres_db_endpoint)"
-        env:
-          TF_VAR_aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          TF_VAR_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  
 
       - name: Persist PostgreSQL Endpoint
         run: echo "POSTGRES_ENDPOINT=${{ steps.terraform_apply.outputs.postgres_endpoint }}" >> $GITHUB_ENV
@@ -61,4 +58,7 @@ jobs:
 
       - name: Database Migration
         run: |
-          flyway -url=jdbc:postgresql://${{ env.POSTGRES_ENDPOINT }}:5432/my-postgres-db -user=admin -password=mysecretpassword migrate
+          flyway -url=jdbc:postgresql://${{ env.POSTGRES_ENDPOINT }}:5432/postgres \
+            -user=${POSTGRES_USERNAME} \
+            -password=${POSTGRES_PASSWORD} \
+            migrate
