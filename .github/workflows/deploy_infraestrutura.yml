@@ -46,22 +46,22 @@ jobs:
         run: echo "POSTGRES_ENDPOINT=${{ steps.terraform_apply.outputs.postgres_endpoint }}" >> $GITHUB_ENV
 
   
-  migrate_database:
-    needs: deploy_infrastructure
-    runs-on: ubuntu-latest
+  # migrate_database:
+  #   needs: deploy_infrastructure
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v2
 
-      - name: Setup Flyway
-        uses: flyway/setup-flyway@v1
-        with:
-          version: '7.15.0'
+  #     - name: Setup Flyway
+  #       uses: flyway/setup-flyway@v1
+  #       with:
+  #         version: '7.15.0'
 
-      - name: Database Migration
-        run: |
-          flyway -url=jdbc:postgresql://${{ env.POSTGRES_ENDPOINT }}:5432/postgres \
-            -user=${POSTGRES_USERNAME} \
-            -password=${POSTGRES_PASSWORD} \
-            migrate
+  #     - name: Database Migration
+  #       run: |
+  #         flyway -url=jdbc:postgresql://${{ env.POSTGRES_ENDPOINT }}:5432/postgres \
+  #           -user=${POSTGRES_USERNAME} \
+  #           -password=${POSTGRES_PASSWORD} \
+  #           migrate
