@@ -14,6 +14,10 @@ variable "aws_secret_key" {
   description = "SECRET ACCESS AWS"
 }
 
+variable "storageType" {
+  default = "gp3"
+}
+
 variable "instanceClass" {
   default = "db.t3.micro"
 }
