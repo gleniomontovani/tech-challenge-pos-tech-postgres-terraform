@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_db_instance" "postgres" {
-  identifier           = "my-postgres-db"
+  identifier           = "postech-postgres-db"
   engine               = "postgres"
   instance_class       = "db.t2.micro"
   username             = var.postgres_username
@@ -13,7 +13,7 @@ resource "aws_db_instance" "postgres" {
   publicly_accessible = false
 
   tags = {
-    Name = "MyPostgresDB"
+    Name = "PostechPostgresDB"
   }
 }
 
