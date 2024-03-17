@@ -1,10 +1,13 @@
 name: Destroy Infrastructure
 
 on:
-  workflow_run:
-    workflows: ["Database Migration"]
-    types:
-      - completed
+  workflow_dispatch:
+    inputs:
+      dir:
+        description: 'Directory with resources to be destroyed'
+        required: true
+        default: 'terraform'
+    
 
 jobs:
   destroy_infrastructure:
