@@ -17,6 +17,7 @@ provider "aws" {
 resource "aws_db_instance" "postgres" {
   identifier                   = var.postres_name
   engine                       = var.engineRds
+  engine_version               = var.engineRdsVersion
   instance_class               = var.instanceClass
   username                     = var.postgres_username
   password                     = var.postgres_password
