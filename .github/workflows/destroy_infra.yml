@@ -1,0 +1,28 @@
+name: Destroy Infrastructure
+
+on:
+  workflow_run:
+    workflows: ["Database Migration"]
+    types:
+      - completed
+
+jobs:
+  destroy_infrastructure:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Initialize Terraform
+        run: |
+          cd terraform
+          terraform init
+
+      - name: Destroy Terraform
+        run: |
+          cd terraform
+          terraform destroy -auto-approve
