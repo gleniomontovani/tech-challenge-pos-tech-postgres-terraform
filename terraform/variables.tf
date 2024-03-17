@@ -14,6 +14,10 @@ variable "aws_secret_key" {
   description = "SECRET ACCESS AWS"
 }
 
+variable "engineRdsVersion" {
+  default = "13.10"
+}
+
 variable "postres_name" {
   default = "postech-postgres-db"
 }
