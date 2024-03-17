@@ -25,6 +25,10 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check  
+
       - name: Initialize Terraform
         run: |
           cd terraform
@@ -46,22 +50,32 @@ jobs:
         run: echo "POSTGRES_ENDPOINT=${{ steps.terraform_apply.outputs.postgres_endpoint }}" >> $GITHUB_ENV
 
   
-  # migrate_database:
-  #   needs: deploy_infrastructure
-  #   runs-on: ubuntu-latest
+  migrate_database:
+    needs: deploy_infrastructure
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
+      - uses: joshuaavalon/flyway-action@v3.0.0
+        with:
+          url: ${{ env.POSTGRES_ENDPOINT }}
+          user: ${POSTGRES_USERNAME}
+          password: ${POSTGRES_PASSWORD}
+          locations: filesystem:./db
+      - run: echo 'deploying to prod'
+    
+    # steps:
+    #   - name: Checkout Repository
+    #     uses: actions/checkout@v2
 
-  #     - name: Setup Flyway
-  #       uses: flyway/setup-flyway@v1
-  #       with:
-  #         version: '7.15.0'
+    #   - name: Setup Flyway
+    #     uses: flyway/setup-flyway@v1
+    #     with:
+    #       version: '7.15.0'
 
-  #     - name: Database Migration
-  #       run: |
-  #         flyway -url=jdbc:postgresql://${{ env.POSTGRES_ENDPOINT }}:5432/postgres \
-  #           -user=${POSTGRES_USERNAME} \
-  #           -password=${POSTGRES_PASSWORD} \
-  #           migrate
+    #   - name: Database Migration
+    #     run: |
+    #       flyway -url=jdbc:postgresql://${{ env.POSTGRES_ENDPOINT }}:5432/postgres \
+    #         -user=${POSTGRES_USERNAME} \
+    #         -password=${POSTGRES_PASSWORD} \
+    #         migrate
