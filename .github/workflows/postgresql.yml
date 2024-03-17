@@ -12,6 +12,8 @@ jobs:
     env:
       TF_VAR_postgres_username: ${{ secrets.POSTGRES_USERNAME }}
       TF_VAR_postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
+      TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     steps:
       - name: Checkout Repository
