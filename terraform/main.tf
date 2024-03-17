@@ -15,14 +15,17 @@ provider "aws" {
 }
 
 resource "aws_db_instance" "postgres" {
-  identifier           = "postech-postgres-db"
-  engine               = "postgres"
-  instance_class       = "db.t2.micro"
-  username             = var.postgres_username
-  password             = var.postgres_password
-  allocated_storage    = 20
-  storage_type         = "gp2"
-  publicly_accessible = false
+  identifier                   = "postech-postgres-db"
+  engine                       = var.engineRds
+  instance_class               = var.instanceClass
+  username                     = var.postgres_username
+  password                     = var.postgres_password
+  storage_type                 = var.storageType
+  allocated_storage            = var.minStorage
+  max_allocated_storage        = var.maxStorage
+  publicly_accessible          = false
+  copy_tags_to_snapshot        = true
+  delete_automated_backups     = true
 
   tags = {
     Name = "PostechPostgresDB"
