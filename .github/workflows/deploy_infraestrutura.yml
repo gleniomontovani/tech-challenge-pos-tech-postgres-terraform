@@ -59,8 +59,8 @@ jobs:
       - uses: joshuaavalon/flyway-action@v3.0.0
         with:
           url: ${{ env.POSTGRES_ENDPOINT }}
-          user: ${POSTGRES_USERNAME}
-          password: ${POSTGRES_PASSWORD}
+          user: ${{ secrets.POSTGRES_USERNAME }}
+          password: ${{ secrets.POSTGRES_PASSWORD }}
           locations: filesystem:./db
       - run: echo 'deploying to prod'
     
