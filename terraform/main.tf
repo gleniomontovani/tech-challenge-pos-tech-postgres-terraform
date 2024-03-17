@@ -15,7 +15,7 @@ provider "aws" {
 }
 
 resource "aws_db_instance" "postgres" {
-  identifier                   = "postech-postgres-db"
+  identifier                   = var.postres_name
   engine                       = var.engineRds
   instance_class               = var.instanceClass
   username                     = var.postgres_username
