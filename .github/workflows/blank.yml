@@ -1,0 +1,65 @@
+
+name: Database Migration
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy_infrastructure:
+    runs-on: ubuntu-latest
+
+    env:
+      TF_VAR_postgres_username: ${{ secrets.POSTGRES_USERNAME }}
+      TF_VAR_postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
+      TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Initialize Terraform
+        run: |
+          cd terraform
+          terraform init
+
+      - name: Plan Terraform
+        run: |
+          cd terraform
+          terraform plan -out=tfplan
+
+      - name: Apply Terraform
+        id: terraform_apply
+        run: |
+          cd terraform
+          terraform apply -auto-approve tfplan | tee output.txt
+          echo "::set-output name=postgres_endpoint::$(terraform output -raw postgres_db_endpoint)"
+
+      - name: Persist PostgreSQL Endpoint
+        run: echo "POSTGRES_ENDPOINT=${{ steps.terraform_apply.outputs.postgres_endpoint }}" >> $GITHUB_ENV
+
+  
+  migrate_database:
+    needs: deploy_infrastructure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Flyway
+        uses: flyway/setup-flyway@v1
+        with:
+          version: '7.15.0'
+
+      - name: Database Migration
+        run: |
+          flyway -url=jdbc:postgresql://${{ env.POSTGRES_ENDPOINT }}:5432/postgres \
+            -user=${POSTGRES_USERNAME} \
+            -password=${POSTGRES_PASSWORD} \
+            migrate
