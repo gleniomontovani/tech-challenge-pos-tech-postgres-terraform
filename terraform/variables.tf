@@ -13,3 +13,23 @@ variable "aws_access_key" {
 variable "aws_secret_key" {
   description = "SECRET ACCESS AWS"
 }
+
+variable "instanceClass" {
+  default = "db.t3.micro"
+}
+
+variable "engineRds" {
+  default = "postgres"
+}
+
+variable "engineRdsVersion" {
+  default = "13.10"
+}
+
+variable "minStorage" {
+  default = "20"
+}
+
+variable "maxStorage" {
+  default = "30"
+}
