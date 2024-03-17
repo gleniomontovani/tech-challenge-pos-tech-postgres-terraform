@@ -14,6 +14,10 @@ variable "aws_secret_key" {
   description = "SECRET ACCESS AWS"
 }
 
+variable "postres_name" {
+  default = "postech-postgres-db"
+}
+
 variable "storageType" {
   default = "gp3"
 }
