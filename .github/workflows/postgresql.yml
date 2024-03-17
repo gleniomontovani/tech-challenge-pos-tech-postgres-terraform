@@ -24,13 +24,13 @@ jobs:
         run: terraform init ./terraform
 
       - name: Plan Terraform
-        run: terraform plan -out=tfplan
+        run: terraform plan -out=tfplan ./terraform
 
       - name: Apply Terraform
         id: terraform_apply
         run: |
           terraform apply -auto-approve ./terraform | tee output.txt
-          echo "::set-output name=postgres_endpoint::$(terraform output -raw postgres_endpoint)"
+          echo "::set-output name=postgres_endpoint::$(terraform output -raw postgres_db_endpoint)"
         env:
           TF_VAR_aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           TF_VAR_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  
