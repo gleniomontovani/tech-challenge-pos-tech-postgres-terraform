@@ -1,9 +1,9 @@
 name: Database Migration
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   pull_request:
     branches:
       - main
@@ -62,7 +62,7 @@ jobs:
           user: ${{ secrets.POSTGRES_USERNAME }}
           password: ${{ secrets.POSTGRES_PASSWORD }}
           locations: filesystem:./db
-      - run: echo 'deploying to prod'
+      - run: echo 'Fazendo migração dos dados....'
     
     # steps:
     #   - name: Checkout Repository
