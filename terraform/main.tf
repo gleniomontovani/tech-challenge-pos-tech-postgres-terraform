@@ -8,8 +8,8 @@ terraform {
 }
 
 provider "aws" {
-  profile = "default" 
-  region = "us-east-1"
+  profile    = "default" 
+  region     = "us-east-1"
   access_key = var.aws_access_key
   secret_key = var.aws_secret_key
 }
@@ -31,8 +31,17 @@ resource "aws_db_instance" "postgres" {
   tags = {
     Name = "PostechPostgresDB"
   }
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to any attribute, indicating that Terraform
+      # should not attempt to recreate the resource if it already exists.
+      # In this case, we are ignoring changes to all attributes.
+      "*",
+    ]
+  }
 }
 
 output "postgres_db_endpoint" {
-  value = "${aws_db_instance.postgres.endpoint}"
+  value = aws_db_instance.postgres.endpoint
 }
