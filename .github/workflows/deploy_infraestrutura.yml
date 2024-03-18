@@ -1,9 +1,9 @@
 name: Database Migration
 
 on:
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -49,13 +49,22 @@ jobs:
           cd terraform
           terraform apply -auto-approve tfplan | tee output.txt || if grep -q "DBInstanceAlreadyExists" output.txt; then echo "Database already exists, skipping creation."; fi
 
-      - name: Persist PostgreSQL Endpoint
-        run: |
-          echo ${{ steps.vars.outputs.postgres_db_endpoint }}
+      - name: Get outputs
+        uses: dflook/terraform-output@v1
+        id: tf-outputs
+        with:
+          path: postech-terraform-config
 
-      - name: Show Output
-        run: |
-          cat postgres_endpoint.txt
+      - name: Print the Enpoint
+        run: echo "The enpoint is ${{ steps.tf-outputs.outputs.postgres_db_endpoint }}"    
+
+      # - name: Persist PostgreSQL Endpoint
+      #   run: |
+      #     echo ${{ steps.vars.outputs.postgres_db_endpoint }}
+
+      # - name: Show Output
+      #   run: |
+      #     cat postgres_endpoint.txt
 
   # migrate_database:
   #   needs: deploy_infrastructure
