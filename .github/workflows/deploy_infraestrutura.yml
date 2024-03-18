@@ -24,7 +24,7 @@ jobs:
 
       - name: Setup Terraform
         if: github.ref == 'refs/heads/master'
-        uses: hashicorp/terraform-github-actions@master
+        uses: hashicorp/setup-terraform@v3
         with:
           terraform_wrapper: false
 
