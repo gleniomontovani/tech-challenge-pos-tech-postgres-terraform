@@ -47,7 +47,7 @@ jobs:
 
       - name: Persist PostgreSQL Endpoint
         run: |
-          postgres_endpoint=$(terraform output -raw postgres_db_endpoint)
+          postgres_endpoint=$(terraform output -raw ***_db_endpoint)
           echo "POSTGRES_ENDPOINT=$postgres_endpoint" >> postgres_endpoint.txt
           echo "Captured PostgreSQL Endpoint: $postgres_endpoint"
 
@@ -65,7 +65,7 @@ jobs:
 
       - name: Create PostgreSQL Database
         run: |
-          PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }} psql -h '$POSTGRES_ENDPOINT' -U ${{ secrets.POSTGRES_USERNAME }} -c "CREATE DATABASE restaurante;"    
+          PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }} psql -h $POSTGRES_ENDPOINT -U ${{ secrets.POSTGRES_USERNAME }} -c "CREATE DATABASE restaurante;"    
          
       - name: Install Flyway CLI
         run: |
@@ -74,5 +74,5 @@ jobs:
           sudo ln -s /opt/flyway/flyway /usr/local/bin/flyway
           
       - name: Run Flyway Migrations
-        run: flyway -url=jdbc:postgresql://'$POSTGRES_ENDPOINT':5432/restaurante -user=${{ secrets.POSTGRES_USERNAME }} -password=${{ secrets.POSTGRES_PASSWORD }} -locations=filesystem:db migrate          
+        run: flyway -url=jdbc:postgresql://$POSTGRES_ENDPOINT/restaurante -user=${{ secrets.POSTGRES_USERNAME }} -password=${{ secrets.POSTGRES_PASSWORD }} -locations=filesystem:db migrate          
 
