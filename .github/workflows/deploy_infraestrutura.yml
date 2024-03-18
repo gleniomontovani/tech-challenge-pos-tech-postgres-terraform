@@ -1,9 +1,9 @@
 name: Database Migration
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   pull_request:
     branches:
       - main
@@ -33,6 +33,10 @@ jobs:
         run: |
           cd terraform
           terraform init
+      
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color    
 
       - name: Plan Terraform
         run: |
@@ -47,7 +51,7 @@ jobs:
 
       - name: Persist PostgreSQL Endpoint
         run: |
-          echo ${{ steps.terraform_apply.outputs.postgres_db_endpoint }}
+          echo ${{ steps.vars.outputs.postgres_db_endpoint }}
           #postgres_endpoint=$(terraform output -raw ***_db_endpoint)
           #echo "POSTGRES_ENDPOINT=$postgres_endpoint" >> postgres_endpoint.txt
           #echo "Captured PostgreSQL Endpoint: $postgres_endpoint"
