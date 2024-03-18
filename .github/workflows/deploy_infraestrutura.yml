@@ -24,9 +24,10 @@ jobs:
 
       - name: Setup Terraform
         if: github.ref == 'refs/heads/master'
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_wrapper: false
+          terraform_version: "3.0.0"
 
       - name: Terraform fmt
         id: fmt
@@ -53,7 +54,8 @@ jobs:
         run: echo "POSTGRES_ENDPOINT=$(terraform output -raw postgres_db_endpoint)" >> $GITHUB_OUTPUT
 
       - name: Print the Enpoint
-        run: echo "The enpoint is ${{ steps.tf.outputs.POSTGRES_ENDPOINT }}"    
+      - run: echo "The enpoint is ${{ steps.tf.outputs.POSTGRES_ENDPOINT }}"  
+      - run: echo ${{ steps.tf.outputs.stdout }}
 
       # - name: Persist PostgreSQL Endpoint
       #   run: |
