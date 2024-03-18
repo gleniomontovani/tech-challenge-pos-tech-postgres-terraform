@@ -13,14 +13,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      # - name: Checkout Repository
+      #   uses: actions/checkout@v2
 
-      - name: Set Flyway Endpoint
+      # - name: Set Flyway Endpoint
+      #   run: |
+      #       if [ -z "${POSTGRES_ENDPOINT}" ]; then
+      #         echo "POSTGRES_ENDPOINT=${{ needs.deploy_infrastructure.outputs.postgres_endpoint }}" >> $GITHUB_ENV
+      #       fi
+
+      - name: Check out repository code
+        uses: actions/checkout@v4
+         
+      - name: Install Flyway CLI
         run: |
-            if [ -z "${POSTGRES_ENDPOINT}" ]; then
-              echo "POSTGRES_ENDPOINT=${{ needs.deploy_infrastructure.outputs.postgres_endpoint }}" >> $GITHUB_ENV
-            fi
+          wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/8.5.6/flyway-commandline-8.5.6-linux-x64.tar.gz | tar xvz && \
+          sudo mv flyway-8.5.6 /opt/flyway && \
+          sudo ln -s /opt/flyway/flyway /usr/local/bin/flyway
+          
+      - name: Run Flyway Migrations
+        run: flyway -url=jdbc:postgresql://localhost:5432/restaurante -user=postgres -password=${{ secrets.POSTGRES_PASSWORD }} -locations=filesystem:src/main/resources/db migrate
           
       - name: Database Migration
         uses: joshuaavalon/flyway-action@v3.0.0
