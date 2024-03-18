@@ -52,9 +52,6 @@ jobs:
       - name: Persist PostgreSQL Endpoint
         run: |
           echo ${{ steps.vars.outputs.postgres_db_endpoint }}
-          #postgres_endpoint=$(terraform output -raw ***_db_endpoint)
-          #echo "POSTGRES_ENDPOINT=$postgres_endpoint" >> postgres_endpoint.txt
-          #echo "Captured PostgreSQL Endpoint: $postgres_endpoint"
 
       - name: Show Output
         run: |
