@@ -53,3 +53,24 @@ jobs:
         run: |
           cat postgres_endpoint.txt
 
+  migrate_database:
+    needs: deploy_infrastructure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Create PostgreSQL Database
+        run: |
+          PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }} psql -h '$POSTGRES_ENDPOINT' -U ${{ secrets.POSTGRES_USERNAME }} -c "CREATE DATABASE restaurante;"    
+         
+      - name: Install Flyway CLI
+        run: |
+          wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/8.5.6/flyway-commandline-8.5.6-linux-x64.tar.gz | tar xvz && \
+          sudo mv flyway-8.5.6 /opt/flyway && \
+          sudo ln -s /opt/flyway/flyway /usr/local/bin/flyway
+          
+      - name: Run Flyway Migrations
+        run: flyway -url=jdbc:postgresql://'$POSTGRES_ENDPOINT':5432/restaurante -user=${{ secrets.POSTGRES_USERNAME }} -password=${{ secrets.POSTGRES_PASSWORD }} -locations=filesystem:db migrate          
+
