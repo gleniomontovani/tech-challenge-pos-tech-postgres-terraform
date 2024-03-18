@@ -34,10 +34,7 @@ resource "aws_db_instance" "postgres" {
 
   lifecycle {
     ignore_changes = [
-      # Ignore changes to any attribute, indicating that Terraform
-      # should not attempt to recreate the resource if it already exists.
-      # In this case, we are ignoring changes to all attributes.
-      "*",
+      all
     ]
   }
 }
