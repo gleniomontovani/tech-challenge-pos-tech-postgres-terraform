@@ -34,7 +34,10 @@ resource "aws_db_instance" "postgres" {
 
   lifecycle {
     ignore_changes = [
-      "all"
+      "arn",
+      "allocated_storage",
+      "allow_major_version_upgrade",
+      "apply_immediately",
     ]
   }
 }
