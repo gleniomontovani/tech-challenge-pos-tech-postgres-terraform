@@ -47,7 +47,7 @@ jobs:
           echo "::set-output name=postgres_endpoint::$(terraform output -raw postgres_db_endpoint)"
 
       - name: Persist PostgreSQL Endpoint
-        run: echo "POSTGRES_ENDPOINT=${{ steps.terraform_apply.outputs.postgres_db_endpoint }}" >> $GITHUB_ENV
+        run: echo "POSTGRES_ENDPOINT=${{ steps.terraform_apply.output.postgres_endpoint }}" >> $GITHUB_ENV
   
   migrate_database:
     needs: deploy_infrastructure
@@ -62,19 +62,3 @@ jobs:
           password: ${{ secrets.POSTGRES_PASSWORD }}
           locations: filesystem:./db
       - run: echo 'Fazendo migração dos dados....'
-    
-    # steps:
-    #   - name: Checkout Repository
-    #     uses: actions/checkout@v2
-
-    #   - name: Setup Flyway
-    #     uses: flyway/setup-flyway@v1
-    #     with:
-    #       version: '7.15.0'
-
-    #   - name: Database Migration
-    #     run: |
-    #       flyway -url=jdbc:postgresql://${{ env.POSTGRES_ENDPOINT }}:5432/postgres \
-    #         -user=${POSTGRES_USERNAME} \
-    #         -password=${POSTGRES_PASSWORD} \
-    #         migrate
