@@ -23,7 +23,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
 
       - name: Terraform fmt
         id: fmt
@@ -49,14 +51,12 @@ jobs:
           cd terraform
           terraform apply -auto-approve tfplan | tee output.txt || if grep -q "DBInstanceAlreadyExists" output.txt; then echo "Database already exists, skipping creation."; fi
 
-      - name: Get outputs
-        uses: dflook/terraform-output@v1
-        id: tf-outputs
-        with:
-          path: postech-terraform-config
+      - name: Get enpoint Database
+        id: tf
+        run: echo "POSTGRES_ENDPOINT=$(terraform output -raw postgres_db_endpoint)" >> $GITHUB_OUTPUT
 
       - name: Print the Enpoint
-        run: echo "The enpoint is ${{ steps.tf-outputs.outputs.postgres_db_endpoint }}"    
+        run: echo "The enpoint is ${{ steps.tf.outputs.POSTGRES_ENDPOINT }}"    
 
       # - name: Persist PostgreSQL Endpoint
       #   run: |
