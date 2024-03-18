@@ -53,7 +53,7 @@ jobs:
 
       - name: Get enpoint Database
         id: tf
-        run: echo "POSTGRES_ENDPOINT=$(terraform output -raw postgres_db_endpoint)" >> $GITHUB_OUTPUT
+        run: echo "POSTGRES_ENDPOINT=$(terraform-bin output -raw postgres_db_endpoint)" >> $GITHUB_OUTPUT
 
       - name: Print the Enpoint
         run: echo "The enpoint is ${{ steps.tf.outputs.POSTGRES_ENDPOINT }}"    
