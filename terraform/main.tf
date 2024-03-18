@@ -32,7 +32,3 @@ resource "aws_db_instance" "postgres" {
     Name = "PostechPostgresDB"
   }
 }
-
-output "postgres_db_endpoint" {
-  value = aws_db_instance.postgres.endpoint
-}
