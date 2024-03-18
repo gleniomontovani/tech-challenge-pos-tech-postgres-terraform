@@ -43,12 +43,7 @@ jobs:
         id: terraform_apply
         run: |
           cd terraform
-          if ! terraform state show | grep "aws_db_instance.postgres"; then
-            terraform apply -auto-approve tfplan | tee output.txt
-            echo "::set-output name=postgres_endpoint::$(terraform output -raw postgres_db_endpoint)"
-          else
-            echo "Database already exists, skipping creation."
-          fi
+          terraform apply -auto-approve tfplan | tee output.txt || if grep -q "DBInstanceAlreadyExists" output.txt; then echo "Database already exists, skipping creation."; fi
 
       - name: Persist PostgreSQL Endpoint
         run: echo "::set-output name=postgres_endpoint::$(terraform output -raw postgres_db_endpoint)"
