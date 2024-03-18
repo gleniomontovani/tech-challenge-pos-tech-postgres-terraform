@@ -34,7 +34,7 @@ resource "aws_db_instance" "postgres" {
 
   lifecycle {
     ignore_changes = [
-      "*"
+      "all"
     ]
   }
 }
