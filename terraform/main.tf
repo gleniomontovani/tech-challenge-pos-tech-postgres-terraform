@@ -43,5 +43,6 @@ resource "aws_db_instance" "postgres" {
 }
 
 output "postgres_db_endpoint" {
-  value = aws_db_instance.rds.postgres.endpoint
+#  value = aws_db_instance.rds.postgres.endpoint
+  value = templatefile("${path.module}/terraform/userdata.sh", { rds_endpoint = "${var.rds_endpoint}" })
 }
