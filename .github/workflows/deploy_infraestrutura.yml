@@ -38,7 +38,7 @@ jobs:
         run: |
           cd terraform
           terraform plan -out=tfplan
-
+            
       - name: Apply Terraform
         id: terraform_apply
         run: |
