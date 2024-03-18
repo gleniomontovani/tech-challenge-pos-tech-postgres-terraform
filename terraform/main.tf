@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.0"  # Altere a versão conforme necessário
+      version = "~> 3.0" 
     }
   }
 }
@@ -43,6 +43,6 @@ resource "aws_db_instance" "postgres" {
 }
 
 output "postgres_db_endpoint" {
-#  value = aws_db_instance.rds.postgres.endpoint
-  value = templatefile("${path.module}/terraform/userdata.sh", { rds_endpoint = "${var.rds_endpoint}" })
+  value = aws_db_instance.rds.postgres.endpoint
+  #value = templatefile("${path.module}/terraform/userdata.sh", { rds_endpoint = "${var.rds_endpoint}" })
 }
