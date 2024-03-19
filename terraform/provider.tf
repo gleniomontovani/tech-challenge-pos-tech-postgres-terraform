@@ -2,6 +2,7 @@ terraform {
   backend "s3" {
     bucket = "terraform-fiapgp68"
     key    = "techchallenge-db/terraform.tfstate"
+    region = "us-east-1"
   }
 }
 
