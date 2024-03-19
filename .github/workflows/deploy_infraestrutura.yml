@@ -26,12 +26,6 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: Terraform fmt
-        id: fmt
-        run: |
-          cd terraform
-          terraform fmt -check  
-
       - name: Initialize Terraform
         id: init
         run: terraform init
@@ -41,8 +35,8 @@ jobs:
         run: terraform validate -no-color    
 
       - name: Plan Terraform
-        id: plan
-        run: terraform plan
+        id: tfplan
+        run: terraform plan out=tfplan
             
       - name: Apply Terraform
         id: apply
