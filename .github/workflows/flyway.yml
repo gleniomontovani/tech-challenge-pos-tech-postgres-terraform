@@ -27,5 +27,5 @@ jobs:
           sudo ln -s /opt/flyway/flyway /usr/local/bin/flyway
           
       - name: Run Flyway Migrations
-        run: flyway -url=jdbc:postgresql://'$POSTGRES_ENDPOINT':5432/restaurante -user=${{ secrets.POSTGRES_USERNAME }} -password=${{ secrets.POSTGRES_PASSWORD }} -locations=filesystem:db migrate
+        run: flyway -url=jdbc:postgresql://${{ secrets.DB_ENDPOINT }}:5432/restaurante -user=${{ secrets.POSTGRES_USERNAME }} -password=${{ secrets.POSTGRES_PASSWORD }} -locations=filesystem:db migrate
 
