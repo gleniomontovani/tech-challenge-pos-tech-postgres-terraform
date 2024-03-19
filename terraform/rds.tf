@@ -10,7 +10,7 @@ resource "aws_db_instance" "rds" {
   allocated_storage            = var.minStorage
   max_allocated_storage        = var.maxStorage
   multi_az                     = false
-  vpc_security_group_ids       = [ aws_security_group.sg-rds.id ]
+  vpc_security_group_ids       = [aws_security_group.sg-rds.id]
   db_subnet_group_name         = aws_db_subnet_group.subnet-rds.id
   apply_immediately            = true
   skip_final_snapshot          = true

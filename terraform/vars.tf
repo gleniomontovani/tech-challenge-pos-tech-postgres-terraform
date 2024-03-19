@@ -71,13 +71,13 @@ variable "vpcCIDR" {
 }
 
 variable "AWSAccount" {
-  default     = "211125728576"
+  default = "211125728576"
 }
 
 variable "tags" {
-  type        = map(string)
+  type = map(string)
   default = {
-    App          = "tech-challenge-pos-tech",
-    Ambiente     = "Desenvolvimento"
+    App      = "tech-challenge-pos-tech",
+    Ambiente = "Desenvolvimento"
   }
 }
