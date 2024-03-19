@@ -36,8 +36,12 @@ jobs:
 
       - name: Plan Terraform
         id: tfplan
-        run: terraform plan out=tfplan
+        run: |
+          cd terraform
+          terraform plan out=tfplan
             
       - name: Apply Terraform
         id: apply
-        run: terraform apply -auto-approve
+        run: |
+          cd terraform
+          terraform apply -auto-approve
