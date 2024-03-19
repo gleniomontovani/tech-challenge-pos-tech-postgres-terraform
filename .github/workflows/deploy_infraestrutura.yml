@@ -1,9 +1,6 @@
 name: Database Migration
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -13,8 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TF_VAR_postgres_username: ${{ secrets.POSTGRES_USERNAME }}
-      TF_VAR_postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
       TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
       TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
@@ -26,73 +21,27 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_wrapper: false
-          terraform_version: "1.1.7"
           
-      # - name: Terraform fmt
-        # id: fmt
-        # run: |
-        #   cd terraform
-        #   terraform fmt -check  
-
-      - name: Initialize Terraform
+      - name: Terraform fmt
+        id: fmt
         run: |
           cd terraform
-          terraform init
+          terraform fmt -check  
+
+      - name: Initialize Terraform
+        id: init
+        run: terraform init
       
       - name: Terraform Validate
         id: validate
-        run: |
-          cd terraform
-          terraform validate -no-color    
+        run: terraform validate -no-color    
 
       - name: Plan Terraform
-        run: |
-          cd terraform 
-          terraform plan -out=tfplan
+        id: plan
+        run: terraform plan -out=tfplan
             
       - name: Apply Terraform
-        id: tf
+        id: apply
         run: |
-          cd terraform
           terraform apply -auto-approve tfplan | tee output.txt
           echo "::set-output name=POSTGRES_ENDPOINT::$(terraform output -raw postgres_db_endpoint)"  >> $GITHUB_OUTPUT
-
-      # - name: Get enpoint Database
-      #   id: tf
-      #   run: echo "POSTGRES_ENDPOINT=$(terraform output -raw postgres_db_endpoint)"
-
-      - name: Print the Enpoint
-        run: echo "The enpoint is ${{ steps.tf.outputs.POSTGRES_ENDPOINT }}"  
-
-      - name: Default
-        run: echo ${{ steps.tf.outputs.stdout }}
-
-      # - name: Persist PostgreSQL Endpoint
-      #   run: |
-      #     echo ${{ steps.vars.outputs.postgres_db_endpoint }}
-
-      # - name: Show Output
-      #   run: |
-      #     cat postgres_endpoint.txt
-
-  # migrate_database:
-  #   needs: deploy_infrastructure
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Check out repository code
-  #       uses: actions/checkout@v4
-
-  #     - name: Create PostgreSQL Database
-  #       run: |
-  #         PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }} psql -h $POSTGRES_ENDPOINT -U ${{ secrets.POSTGRES_USERNAME }} -c "CREATE DATABASE restaurante;"    
-         
-  #     - name: Install Flyway CLI
-  #       run: |
-  #         wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/8.5.6/flyway-commandline-8.5.6-linux-x64.tar.gz | tar xvz && \
-  #         sudo mv flyway-8.5.6 /opt/flyway && \
-  #         sudo ln -s /opt/flyway/flyway /usr/local/bin/flyway
-          
-  #     - name: Run Flyway Migrations
-  #       run: flyway -url=jdbc:postgresql://$POSTGRES_ENDPOINT/restaurante -user=${{ secrets.POSTGRES_USERNAME }} -password=${{ secrets.POSTGRES_PASSWORD }} -locations=filesystem:db migrate          
-
