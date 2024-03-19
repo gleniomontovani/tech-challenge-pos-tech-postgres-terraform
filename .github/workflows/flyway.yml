@@ -13,21 +13,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # - name: Checkout Repository
-      #   uses: actions/checkout@v2
-
-      - name: Set Endpoint Database
-        run: |
-            # if [ -z "${POSTGRES_ENDPOINT}" ]; then
-            echo "POSTGRES_ENDPOINT=${{ needs.deploy_infrastructure.outputs.postgres_db_endpoint }}" >> $GITHUB_ENV
-            # fi
-
       - name: Check out repository code
         uses: actions/checkout@v4
 
       - name: Create PostgreSQL Database
         run: |
-          PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }} psql -h '$POSTGRES_ENDPOINT' -U ${{ secrets.POSTGRES_USERNAME }} -c "CREATE DATABASE restaurante;"    
+          PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }} psql -h ${{ secrets.$POSTGRES_ENDPOINT }} -U ${{ secrets.POSTGRES_USERNAME }} -c "CREATE DATABASE restaurante;"    
          
       - name: Install Flyway CLI
         run: |
@@ -36,13 +27,4 @@ jobs:
           sudo ln -s /opt/flyway/flyway /usr/local/bin/flyway
           
       - name: Run Flyway Migrations
-        run: flyway -url=jdbc:postgresql://'$POSTGRES_ENDPOINT':5432/restaurante -user=${{ secrets.POSTGRES_USERNAME }} -password=${{ secrets.POSTGRES_PASSWORD }} -locations=filesystem:db migrate
-          
-      # - name: Database Migration
-      #   uses: joshuaavalon/flyway-action@v3.0.0
-      #   with:
-      #     url: jdbc:postgresql://${{ needs.deploy_infrastructure.outputs.postgres_db_endpoint }}:5432/restaurante
-      #     user: ${{ secrets.POSTGRES_USERNAME }}
-      #     password: ${{ secrets.POSTGRES_PASSWORD }}
-      #     locations: filesystem:./db
-      # - run: echo 'Fazendo migração dos dados....'
+        run: flyway -url=jdbc:postgresql://${{ secrets.$POSTGRES_ENDPOINT }}:5432/restaurante -user=${{ secrets.POSTGRES_USERNAME }} -password=${{ secrets.POSTGRES_PASSWORD }} -locations=filesystem:db migrate
