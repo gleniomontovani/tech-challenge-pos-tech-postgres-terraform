@@ -1,6 +1,9 @@
 name: Database Migration
 
 on:
+  # push:
+  #   branches:
+  #     - main
   pull_request:
     branches:
       - main
@@ -10,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      TF_VAR_rdsUsername: ${{ secrets.DB_USERNAME }}
+      TF_VAR_rdsPassword: ${{ secrets.DB_PASSWORD }}
+      TF_VAR_rdsName: ${{ secrets.DB_NAME }}
       TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
       TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
@@ -19,9 +25,7 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_wrapper: false
-          
+
       - name: Terraform fmt
         id: fmt
         run: |
@@ -38,10 +42,8 @@ jobs:
 
       - name: Plan Terraform
         id: plan
-        run: terraform plan -out=tfplan
+        run: terraform plan
             
       - name: Apply Terraform
         id: apply
-        run: |
-          terraform apply -auto-approve tfplan | tee output.txt
-          echo "::set-output name=POSTGRES_ENDPOINT::$(terraform output -raw postgres_db_endpoint)"  >> $GITHUB_OUTPUT
+        run: terraform apply -auto-approve
