@@ -28,7 +28,9 @@ jobs:
 
       - name: Initialize Terraform
         id: init
-        run: terraform init
+        run: |
+          cd terraform
+          terraform init
       
       - name: Terraform Validate
         id: validate
