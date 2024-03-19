@@ -44,12 +44,15 @@ jobs:
         run: terraform plan -out=tfplan
             
       - name: Apply Terraform
-        id: terraform_apply
-        run: terraform apply -auto-approve tfplan
-
-      - name: Get enpoint Database
         id: tf
-        run: echo "POSTGRES_ENDPOINT=$(terraform output -raw postgres_db_endpoint)" >> $GITHUB_OUTPUT
+        run: |
+          cd terraform
+          terraform apply -auto-approve tfplan | tee output.txt
+          echo "::set-output name=POSTGRES_ENDPOINT::$(terraform output -raw postgres_db_endpoint)"  >> $GITHUB_OUTPUT
+
+      # - name: Get enpoint Database
+      #   id: tf
+      #   run: echo "POSTGRES_ENDPOINT=$(terraform output -raw postgres_db_endpoint)"
 
       - name: Print the Enpoint
         run: echo "The enpoint is ${{ steps.tf.outputs.POSTGRES_ENDPOINT }}"  
