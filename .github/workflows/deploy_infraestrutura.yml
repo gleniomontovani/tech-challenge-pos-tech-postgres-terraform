@@ -1,14 +1,9 @@
 name: Database Migration
 
 on:
-  push:
+  pull_request:
     branches:
       - main
-
-# on:
-#   pull_request:
-#     branches:
-#       - main
 
 jobs:
   deploy_infrastructure:
@@ -63,7 +58,7 @@ jobs:
       - name: Upload RDS Endpoint to S3
         run: |
           cd terraform
-          aws s3 cp rds_endpoint.txt s3://terraform-fiapgp68/techchallenge-db/rds_endpoint --acl private
+          aws s3 cp rds_endpoint.txt s3://${{ secrets.AWS_BUCKET }}/{{ secrets.AWS_S3_BUCKET_SOURCE_DB}}/rds_endpoint --acl private
           rm -r rds_endpoint.txt
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
