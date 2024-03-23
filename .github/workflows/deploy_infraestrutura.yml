@@ -106,15 +106,19 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
-      - name: Store RDS Endpoint
-        id: terraform
-        working-directory: ./terraform
-        run: |
-          echo "::set-output name=postgres_db_endpoint::$(terraform output -raw postgres_db_endpoint)"
-          echo "$(terraform output -raw postgres_db_endpoint)" > rds_endpoint.txt
+      # - name: Store RDS Endpoint
+      #   id: terraform
+      #   working-directory: ./terraform
+      #   run: |
+      #     echo "::set-output name=postgres_db_endpoint::$(terraform output -raw postgres_db_endpoint)"
+      #     echo "$(terraform output -raw postgres_db_endpoint)" > rds_endpoint.txt
+
+      - name: Get RDS Endpoint
+        id: rds_endpoint
+        run: echo "::set-output name=value::$(terraform output -raw postgres_db_endpoint)"
 
       - name: Write RDS Endpoint to file
-        run: echo "${{ steps.rds_endpoint.outputs.value }}" > rds_endpoint.txt    
+        run: echo "${{ steps.rds_endpoint.outputs.value }}" > rds_endpoint.txt
 
       - name: List files in directory
         run: ls
