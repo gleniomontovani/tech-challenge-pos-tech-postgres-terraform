@@ -95,15 +95,18 @@ jobs:
           terraform init \
             -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
             -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+        working-directory: ./terraform    
       
       - name: Terraform Validate
         id: validate
-        run: terraform validate -no-color    
+        run: terraform validate -no-color
+        working-directory: ./terraform
 
       - name: Plan Terraform
         run: |
           cd terraform
           terraform plan -out=tfplan
+        working-directory: ./terraform  
             
       - name: Terraform Apply
         run: terraform apply -auto-approve
