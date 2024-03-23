@@ -112,7 +112,7 @@ jobs:
                  
           echo "postgres_db_endpoint=$postgres_db_endpoint" >> $GITHUB_OUTPUT
           echo "$postgres_db_endpoint" > rds_endpoint.txt
-          echo "$postgres_db_endpoint"
+          echo "Endpoint= $postgres_db_endpoint"
           cat rds_endpoint.txt
         working-directory: ./terraform
 
