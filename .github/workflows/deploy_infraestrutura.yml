@@ -116,6 +116,9 @@ jobs:
           echo "::set-output name=postgres_db_endpoint::$(terraform output -raw postgres_db_endpoint)"
           echo "$(terraform output -raw postgres_db_endpoint)" > rds_endpoint.txt
 
+      - name: List files in directory
+        run: ls
+
       - name: Install AWS CLI
         run: |
           sudo apt-get update
