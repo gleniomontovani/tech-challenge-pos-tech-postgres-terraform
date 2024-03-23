@@ -122,11 +122,21 @@ jobs:
           sudo apt-get install -y awscli
 
       - name: Upload RDS Endpoint to S3
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          # aws configure set "us-east-1" ${{ secrets.AWS_REGION }}
-          aws s3 cp rds_endpoint.txt s3://terraform-fiapgp68/techchallenge-db/rds_endpoint.txt
+        uses: joutvhu/upload-s3@v1
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
+          aws_bucket: terraform-fiapgp68
+          source: 'techchallenge-db/'
+          target: 'rds_endpoint.txt'
+          acl: public-read
+          #delete: true
+      #   run: |
+      #     aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     # aws configure set "us-east-1" ${{ secrets.AWS_REGION }}
+      #     aws s3 cp rds_endpoint.txt s3://terraform-fiapgp68/techchallenge-db/rds_endpoint.txt
 
     outputs:
       postgres_db_endpoint: ${{ steps.terraform.outputs.postgres_db_endpoint }}
