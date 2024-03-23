@@ -29,6 +29,8 @@ jobs:
         run: |
           cd terraform
           terraform init
+        working-directory: ./terraform   
 
       - name: Destroy Terraform
         run: terraform destroy -auto-approve
+        working-directory: ./terraform
