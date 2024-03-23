@@ -116,6 +116,9 @@ jobs:
           echo "::set-output name=postgres_db_endpoint::$(terraform output -raw postgres_db_endpoint)"
           echo "$(terraform output -raw postgres_db_endpoint)" > rds_endpoint.txt
 
+      - name: Write RDS Endpoint to file
+        run: echo "${{ steps.rds_endpoint.outputs.value }}" > rds_endpoint.txt    
+
       - name: List files in directory
         run: ls
 
