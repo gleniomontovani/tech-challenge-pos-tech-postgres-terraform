@@ -5,61 +5,6 @@ on:
     branches:
       - main
 
-# jobs:
-#   create_rds:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Configure AWS Credentials
-#         run: |
-#           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      
-#       - name: Checkout repository
-#         uses: actions/checkout@v2
-
-#       - name: Setup Terraform
-#         uses: hashicorp/setup-terraform@v1
-#         with:
-#           terraform_version: 1.1.0
-
-#       - name: Terraform Init
-#         run: |
-#           cd terraform
-#           terraform init \
-#             -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
-#             -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-#         working-directory: ./terraform
-
-#       - name: Terraform Plan
-#         run: terraform plan
-#         working-directory: ./terraform  
-
-#       - name: Terraform Apply
-#         run: terraform apply -auto-approve
-#         working-directory: ./terraform
-
-#       - name: Store RDS Endpoint
-#         id: terraform
-#         working-directory: ./terraform
-#         run: |
-#           echo "::set-output name=postgres_db_endpoint::$(terraform output -raw postgres_db_endpoint)"
-#           echo "$(terraform output -raw postgres_db_endpoint)" > rds_endpoint.txt
-
-#       - name: Install AWS CLI
-#         run: |
-#           sudo apt-get update
-#           sudo apt-get install -y awscli
-
-#       - name: Upload RDS Endpoint to S3
-#         run: aws s3 cp rds_endpoint.txt s3://your-bucket-name/techchallenge-db/rds_endpoint.txt
-#         env:
-#           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}   
-
-#     outputs:
-#       postgres_db_endpoint: ${{ steps.terraform.outputs.postgres_db_endpoint }}
-
-
 # on:
 #   pull_request:
 #     branches:
@@ -107,13 +52,8 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           terraform apply -auto-approve tfplan
-          #postgres_db_endpoint=$(terraform output -raw postgres_db_endpoint | cut -d' ' -f2 | cut -d: -f1-2)
           postgres_db_endpoint=$(terraform output -raw postgres_db_endpoint  | awk 'NR==3' | awk -F' ' '{print $NF}')
-                 
-          #echo "postgres_db_endpoint=$postgres_db_endpoint" >> $GITHUB_OUTPUT
           echo "$postgres_db_endpoint" > rds_endpoint.txt
-          #echo "$postgres_db_endpoint"
-          cat rds_endpoint.txt
         working-directory: ./terraform
 
       - name: Install AWS CLI
@@ -125,19 +65,8 @@ jobs:
         run: |
           cd terraform
           aws s3 cp rds_endpoint.txt s3://terraform-fiapgp68/techchallenge-db/rds_endpoint.txt --acl private
+          rm -r rds_endpoint.txt
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}  
-          
-
-      # - name: Get RDS Endpoint
-      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      #   id: rds_endpoint
-      #   run: terraform output ***_db_endpoint
-      #   working-directory: ./terraform
-
-      # - name: Print RDS Endpoint
-      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      #   run: |
-      #     echo "RDS Endpoint= ${{ steps.apply.outputs.rds_endpoint }}"   
