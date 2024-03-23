@@ -30,27 +30,22 @@ jobs:
         working-directory: ./terraform
 
       - name: Store RDS Endpoint
-        run: echo "${{ steps.terraform.outputs.postgres_db_endpoint }}" > rds_endpoint.txt
+        id: terraform
+        working-directory: ./terraform
+        run: |
+          echo "::set-output name=postgres_db_endpoint::$(terraform output -raw postgres_db_endpoint)"
+          echo "$(terraform output -raw postgres_db_endpoint)" > rds_endpoint.txt
+
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
 
       - name: Upload RDS Endpoint to S3
-        uses: aws-actions/amazon-s3-upload-file@v1
-        with:
-          bucket_name: terraform-fiapgp68
-          object_name: techchallenge-db/rds_endpoint.txt
-          file_path: rds_endpoint.txt
-      # - uses: joutvhu/upload-s3@v1
-      #   with:
-      #     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws_region: us-east-1
-      #     aws_bucket: ${{ secrets.AWS_BUCKET }}
-      #     source: './dist'
-      #     target: ''
-      #     acl: public-read
-      #     delete: true    
+        run: aws s3 cp rds_endpoint.txt s3://your-bucket-name/techchallenge-db/rds_endpoint.txt
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}   
 
     outputs:
       postgres_db_endpoint: ${{ steps.terraform.outputs.postgres_db_endpoint }}
