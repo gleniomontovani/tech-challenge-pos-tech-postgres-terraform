@@ -115,7 +115,9 @@ jobs:
 
       - name: Get RDS Endpoint
         id: rds_endpoint
-        run: echo "postgres_db_endpoint=$(terraform output -raw postgres_db_endpoint)" >> $GITHUB_OUTPUT
+        run: | 
+          echo $(terraform output -raw postgres_db_endpoint)
+          echo "postgres_db_endpoint"='$(terraform output -raw postgres_db_endpoint)' >> $GITHUB_OUTPUT
         
         #echo "::set-output name=value::$(terraform output -raw postgres_db_endpoint)"
         
