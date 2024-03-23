@@ -69,12 +69,12 @@ jobs:
   deploy_infrastructure:
     runs-on: ubuntu-latest
 
-    # env:
-    #   TF_VAR_rdsUsername: ${{ secrets.DB_USERNAME }}
-    #   TF_VAR_rdsPassword: ${{ secrets.DB_PASSWORD }}
-    #   TF_VAR_rdsName: ${{ secrets.DB_NAME }}
-    #   TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #   TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    env:
+      TF_VAR_rdsUsername: ${{ secrets.DB_USERNAME }}
+      TF_VAR_rdsPassword: ${{ secrets.DB_PASSWORD }}
+      TF_VAR_rdsName: ${{ secrets.DB_NAME }}
+      TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     steps:
       - name: Configure AWS Credentials
@@ -99,7 +99,7 @@ jobs:
         working-directory: ./terraform
 
       - name: Plan Terraform
-        run: terraform plan -out=tfplan
+        run: terraform plan -out=tfplan -input=true 
         working-directory: ./terraform  
             
       - name: Terraform Apply
