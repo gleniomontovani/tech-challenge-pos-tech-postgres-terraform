@@ -63,7 +63,7 @@ variable "subnet03" {
 }
 
 variable "vpcId" {
-  default = "vpc-0d9ba8df8db5b97ab"
+  default = "vpc-0765226045f453fbc"
 }
 
 variable "vpcCIDR" {
