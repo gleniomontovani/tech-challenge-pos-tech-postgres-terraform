@@ -106,3 +106,13 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve tfplan
         working-directory: ./terraform
+
+      - name: Get RDS Endpoint
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        id: rds_endpoint
+        run: terraform output ***_db_endpoint
+        working-directory: ./terraform
+
+      - name: Print RDS Endpoint
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: echo "RDS Endpoint: ${{ steps.rds_endpoint.outputs.rds_endpoint }}"   
