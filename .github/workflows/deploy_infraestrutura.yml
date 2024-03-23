@@ -115,4 +115,4 @@ jobs:
 
       - name: Print RDS Endpoint
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: echo "RDS Endpoint: ${{ steps.rds_endpoint.outputs.rds_endpoint }}"   
+        run: echo "RDS Endpoint= ${{ steps.rds_endpoint.outputs.rds_endpoint }}"   
