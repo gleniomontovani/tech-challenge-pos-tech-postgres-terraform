@@ -111,11 +111,12 @@ jobs:
           echo -n "$postgres_db_endpoint"
           #echo "postgres_db_endpoint=$postgres_db_endpoint" >> $GITHUB_OUTPUT
           echo "$postgres_db_endpoint" > rds_endpoint.txt
-          ls
         working-directory: ./terraform
 
       - name: List files in directory
-        run: ls  
+        run: |
+          cd terraform
+          ls  
 
       - name: Install AWS CLI
         run: |
@@ -124,6 +125,7 @@ jobs:
 
       - name: Upload RDS Endpoint to S3
         run: |
+          cd terraform
           aws s3 cp rds_endpoint.txt s3://terraform-fiapgp68/techchallenge-db/rds_endpoint.txt
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
