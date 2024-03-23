@@ -63,7 +63,7 @@ jobs:
       - name: Upload RDS Endpoint to S3
         run: |
           cd terraform
-          aws s3 cp rds_endpoint.txt s3://terraform-fiapgp68/techchallenge-db/rds_endpoint.txt --acl private
+          aws s3 cp rds_endpoint.txt s3://terraform-fiapgp68/techchallenge-db/rds_endpoint --acl private
           rm -r rds_endpoint.txt
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
