@@ -113,6 +113,9 @@ jobs:
           echo -n "$postgres_db_endpoint" > rds_endpoint.txt
         working-directory: ./terraform
 
+      - name: List files in directory
+        run: ls  
+
       - name: Install AWS CLI
         run: |
           sudo apt-get update
