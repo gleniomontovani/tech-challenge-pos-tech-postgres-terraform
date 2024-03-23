@@ -108,7 +108,7 @@ jobs:
         run: |
           terraform apply -auto-approve tfplan
           #postgres_db_endpoint=$(terraform output -raw postgres_db_endpoint | cut -d' ' -f2 | cut -d: -f1-2)
-          postgres_db_endpoint=$(terraform output -raw postgres_db_endpoint | awk '{print $NF}')
+          postgres_db_endpoint=$(terraform output -raw postgres_db_endpoint | awk 'NR==3{print}')
           
           #echo -n "$postgres_db_endpoint"
           #echo "postgres_db_endpoint=$postgres_db_endpoint" >> $GITHUB_OUTPUT
