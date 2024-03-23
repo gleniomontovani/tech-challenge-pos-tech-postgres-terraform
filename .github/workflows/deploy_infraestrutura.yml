@@ -128,7 +128,7 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-1
           aws_bucket: terraform-fiapgp68
-          source: 'techchallenge-db/'
+          source: './techchallenge-db'
           target: 'rds_endpoint.txt'
           acl: public-read
           #delete: true
