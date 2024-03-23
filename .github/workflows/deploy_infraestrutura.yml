@@ -108,7 +108,7 @@ jobs:
         run: |
           terraform apply -auto-approve tfplan
           #postgres_db_endpoint=$(terraform output -raw postgres_db_endpoint | cut -d' ' -f2 | cut -d: -f1-2)
-          postgres_db_endpoint=$(terraform output -raw postgres_db_endpoint | awk 'match($0, /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+/) {print substr($0, RSTART, RLENGTH); exit}')
+          postgres_db_endpoint=$(terraform output -raw postgres_db_endpoint | sed -n 's/.*\(rds-[a-zA-Z0-9]*\.amazonaws\.com:[0-9]*\).*/\1/p')
                  
           #echo "postgres_db_endpoint=$postgres_db_endpoint" >> $GITHUB_OUTPUT
           echo "$postgres_db_endpoint" > rds_endpoint.txt
