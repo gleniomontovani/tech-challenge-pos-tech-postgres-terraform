@@ -1,56 +1,99 @@
 name: Database Migration
 
 on:
-  # push:
-  #   branches:
-  #     - main
-  pull_request:
+  push:
     branches:
       - main
 
 jobs:
-  deploy_infrastructure:
+  create_rds:
     runs-on: ubuntu-latest
-
-    env:
-      TF_VAR_rdsUsername: ${{ secrets.DB_USERNAME }}
-      TF_VAR_rdsPassword: ${{ secrets.DB_PASSWORD }}
-      TF_VAR_rdsName: ${{ secrets.DB_NAME }}
-      TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
     steps:
-      - name: Configure AWS Credentials
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Checkout Repository
-        uses: actions/checkout@v2    
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.1.0
 
-      - name: Initialize Terraform
-        id: init
-        run: |
-          cd terraform
-          terraform init \
-            -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
-            -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: ./terraform  
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: ./terraform
+
+      - name: Store RDS Endpoint
+        run: echo "${{ steps.terraform.outputs.postgres_db_endpoint }}" > rds_endpoint.txt
+
+      - name: Upload RDS Endpoint to S3
+        uses: aws-actions/amazon-s3-upload-file@v1
+        with:
+          bucket_name: your-bucket-name
+          object_name: techchallenge-db/rds_endpoint.txt
+          file_path: rds_endpoint.txt
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    outputs:
+      postgres_db_endpoint: ${{ steps.terraform.outputs.postgres_db_endpoint }}
+
+
+# on:
+#   pull_request:
+#     branches:
+#       - main
+
+# jobs:
+#   deploy_infrastructure:
+#     runs-on: ubuntu-latest
+
+#     env:
+#       TF_VAR_rdsUsername: ${{ secrets.DB_USERNAME }}
+#       TF_VAR_rdsPassword: ${{ secrets.DB_PASSWORD }}
+#       TF_VAR_rdsName: ${{ secrets.DB_NAME }}
+#       TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#       TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+#     steps:
+#       - name: Configure AWS Credentials
+#         run: |
+#           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+#       - name: Checkout Repository
+#         uses: actions/checkout@v2    
+
+#       - name: Setup Terraform
+#         uses: hashicorp/setup-terraform@v2
+
+#       - name: Initialize Terraform
+#         id: init
+#         run: |
+#           cd terraform
+#           terraform init \
+#             -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
+#             -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
       
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate -no-color    
+#       - name: Terraform Validate
+#         id: validate
+#         run: terraform validate -no-color    
 
-      - name: Plan Terraform
-        run: |
-          cd terraform
-          terraform plan -out=tfplan
+#       - name: Plan Terraform
+#         run: |
+#           cd terraform
+#           terraform plan -out=tfplan
             
-      - name: Apply Terraform
-        id: terraform_apply
-        run: |
-          cd terraform
-          terraform apply -auto-approve tfplan | tee output.txt
-          echo "::set-output name=postgres_endpoint::$(terraform output -raw postgres_db_endpoint)"
+#       - name: Apply Terraform
+#         id: terraform_apply
+#         run: |
+#           cd terraform
+#           terraform apply -auto-approve tfplan | tee output.txt
+#           echo "::set-output name=postgres_endpoint::$(terraform output -raw postgres_db_endpoint)"
