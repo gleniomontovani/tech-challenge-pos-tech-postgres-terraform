@@ -90,11 +90,7 @@ jobs:
 
       - name: Initialize Terraform
         id: init
-        run: |
-          cd terraform
-          terraform init \
-            -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
-            -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+        run: terraform init
         working-directory: ./terraform    
       
       - name: Terraform Validate
@@ -103,9 +99,7 @@ jobs:
         working-directory: ./terraform
 
       - name: Plan Terraform
-        run: |
-          cd terraform
-          terraform plan -out=tfplan
+        run: terraform plan -out=tfplan
         working-directory: ./terraform  
             
       - name: Terraform Apply
