@@ -69,18 +69,18 @@ jobs:
   deploy_infrastructure:
     runs-on: ubuntu-latest
 
-    env:
-      TF_VAR_rdsUsername: ${{ secrets.DB_USERNAME }}
-      TF_VAR_rdsPassword: ${{ secrets.DB_PASSWORD }}
-      TF_VAR_rdsName: ${{ secrets.DB_NAME }}
-      TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    # env:
+    #   TF_VAR_rdsUsername: ${{ secrets.DB_USERNAME }}
+    #   TF_VAR_rdsPassword: ${{ secrets.DB_PASSWORD }}
+    #   TF_VAR_rdsName: ${{ secrets.DB_NAME }}
+    #   TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #   TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     steps:
-      - name: Configure AWS Credentials
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      # - name: Configure AWS Credentials
+      #   run: |
+      #     aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Checkout Repository
         uses: actions/checkout@v2    
@@ -106,47 +106,3 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve tfplan
         working-directory: ./terraform
-
-      - name: Get RDS Endpoint
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        id: rds_endpoint
-        run: terraform output ***_db_endpoint
-        working-directory: ./terraform
-
-      - name: Print RDS Endpoint
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: echo "RDS Endpoint= ${{ steps.rds_endpoint.outputs.rds_endpoint }}"
-
-      # - name: Store RDS Endpoint
-      #   id: terraform
-      #   working-directory: ./terraform
-      #   run: |
-      #     echo "::set-output name=postgres_db_endpoint::$(terraform output -raw postgres_db_endpoint)"
-      #     echo "$(terraform output -raw postgres_db_endpoint)" > rds_endpoint.txt
-
-      # - name: Get RDS Endpoint
-      #   id: rds_endpoint
-      #   run: terraform output ***_db_endpoint
-      #   working-directory: ./terraform
-        
-      - name: Write RDS Endpoint to file
-        run: echo "${{ steps.rds_endpoint.outputs.value }}" > rds_endpoint.txt
-
-      - name: List files in directory
-        run: ls
-
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
- 
-      - name: Upload RDS Endpoint to S3
-        run: |
-          aws s3 cp rds_endpoint.txt s3://terraform-fiapgp68/techchallenge-db/rds_endpoint.txt
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-
-    outputs:
-      postgres_db_endpoint: ${{ steps.terraform.outputs.postgres_db_endpoint }}
