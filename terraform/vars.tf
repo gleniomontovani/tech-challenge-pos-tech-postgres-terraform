@@ -51,15 +51,15 @@ variable "maxStorage" {
 }
 
 variable "subnet01" {
-  default = "subnet-0ea148c656cd22230"
+  default = "subnet-0a44ba5197d3b2b74"
 }
 
 variable "subnet02" {
-  default = "subnet-093d613d693b15af1"
+  default = "subnet-062e6be5aadbf40d6"
 }
 
 variable "subnet03" {
-  default = "subnet-0c6a70270c9f3a68e"
+  default = "subnet-027da0ea644ff7a23"
 }
 
 variable "vpcId" {
