@@ -103,8 +103,12 @@ jobs:
         working-directory: ./terraform  
             
       - name: Terraform Apply
+        id: apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve tfplan
+        run: |
+          terraform apply -auto-approve tfplan
+          echo "{postgres_db_endpoint}={$(terraform output -raw postgres_db_endpoint)}" >> $GITHUB_OUTPUT
+          echo "${{ steps.apply.outputs.value }}" > rds_endpoint.txt
         working-directory: ./terraform
 
       - name: Get RDS Endpoint
@@ -115,4 +119,5 @@ jobs:
 
       - name: Print RDS Endpoint
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: echo "RDS Endpoint= ${{ steps.rds_endpoint.outputs.rds_endpoint }}"   
+        run: |
+          echo "RDS Endpoint= ${{ steps.apply.outputs.rds_endpoint }}"   
