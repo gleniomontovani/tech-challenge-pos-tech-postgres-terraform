@@ -115,11 +115,8 @@ jobs:
 
       - name: Get RDS Endpoint
         id: rds_endpoint
-        run: | 
-          echo $(terraform output -raw postgres_db_endpoint)
-          echo "postgres_db_endpoint"='$(terraform output -raw postgres_db_endpoint)' >> $GITHUB_OUTPUT
-        
-        #echo "::set-output name=value::$(terraform output -raw postgres_db_endpoint)"
+        run: terraform output ***_db_endpoint
+        working-directory: ./terraform
         
       - name: Write RDS Endpoint to file
         run: echo "${{ steps.rds_endpoint.outputs.value }}" > rds_endpoint.txt
