@@ -108,6 +108,7 @@ jobs:
         run: |
           terraform apply -auto-approve tfplan
           postgres_db_endpoint=$(terraform output -raw postgres_db_endpoint)
+          echo "$postgres_db_endpoint"
           echo "postgres_db_endpoint=$postgres_db_endpoint" >> $GITHUB_OUTPUT
           echo "$postgres_db_endpoint" > rds_endpoint.txt
         working-directory: ./terraform
