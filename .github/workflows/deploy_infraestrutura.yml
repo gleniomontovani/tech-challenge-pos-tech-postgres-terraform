@@ -107,7 +107,7 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           terraform apply -auto-approve tfplan
-          echo "{postgres_db_endpoint}={$(terraform output -raw postgres_db_endpoint)}" >> $GITHUB_OUTPUT
+          echo "postgres_db_endpoint=$(terraform output -raw postgres_db_endpoint)" >> $GITHUB_OUTPUT
           echo "${{ steps.apply.outputs.value }}" > rds_endpoint.txt
         working-directory: ./terraform
 
