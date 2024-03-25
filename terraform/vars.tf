@@ -2,11 +2,11 @@ variable "regionDefault" {
   default = "us-east-1"
 }
 
-variable "rdsUsername" {
+variable "rds_user_name" {
   description = "Username for PostgreSQL"
 }
 
-variable "rdsPassword" {
+variable "rds_password" {
   description = "Password for PostgreSQL"
 }
 
@@ -18,8 +18,8 @@ variable "aws_secret_key" {
   description = "SECRET ACCESS AWS"
 }
 
-variable "rdsName" {
-  default = "Database Name"
+variable "rds_database_name" {
+  description = "Database Name"
 }
 
 variable "projectName" {
@@ -77,7 +77,7 @@ variable "AWSAccount" {
 variable "tags" {
   type = map(string)
   default = {
-    App      = "tech-challenge-pos-tech",
+    RDS      = "tech-challenge-pos-tech-rds",
     Ambiente = "Desenvolvimento"
   }
 }
