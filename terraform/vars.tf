@@ -23,7 +23,7 @@ variable "rds_database_name" {
 }
 
 variable "projectName" {
-  default = "tech-challenge-pos-tech"
+  default = "tech-challenge"
 }
 
 variable "storageType" {
@@ -50,24 +50,24 @@ variable "maxStorage" {
   default = "30"
 }
 
-variable "subnet01" {
-  default = "subnet-0b84de7e928a9376f"
+variable "subnet_01_id" {
+  default = "subnet-0a8e628515a86f8df"
 }
 
-variable "subnet02" {
-  default = "subnet-04a69234760025f8e"
+variable "subnet_02_id" {
+  default = "subnet-0dc42a41923392500"
 }
 
-variable "subnet03" {
-  default = "subnet-0bd942a3a3550120f"
+variable "subnet_03_id" {
+  default = "subnet-013713840a17f7dbc"
 }
 
-variable "vpcId" {
-  default = "vpc-008501f5a531a84b1"
-}
-
-variable "vpcCIDR" {
+variable "vpc_cidr_block" {
   default = "172.31.0.0/16"
+}
+
+variable "vpc_id" {
+  default = "vpc-008501f5a531a84b1"
 }
 
 variable "AWSAccount" {
