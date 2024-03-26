@@ -1,8 +1,7 @@
 name: Database Migration
 
 on:
-  push:
-  #pull_request:  
+  pull_request:  
     branches:
       - main      
 
