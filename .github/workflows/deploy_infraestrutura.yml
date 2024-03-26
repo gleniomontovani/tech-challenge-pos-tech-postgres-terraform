@@ -1,9 +1,12 @@
 name: Database Migration
 
 on:
-  pull_request:  
-    branches:
-      - main      
+  workflow_dispatch:
+    inputs:
+      dir:
+        description: 'Diretório com os recursos a serem criados.'
+        required: true
+        default: 'terraform'     
 
 jobs:
   deploy_infrastructure:
