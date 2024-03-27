@@ -46,7 +46,6 @@ jobs:
             
       - name: Terraform Apply
         id: apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           terraform apply -auto-approve tfplan
           postgres_db_endpoint=$(terraform output -raw postgres_db_endpoint  | awk 'NR==3' | awk -F' ' '{print $NF}')
