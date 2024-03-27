@@ -15,6 +15,7 @@ env:
 jobs:
   destroy_infrastructure:
     runs-on: ubuntu-latest
+    name: Destroy Infrastructure the DB
     env:
       TF_WORKING_DIR: ${{ github.event.inputs.dir }}
       TF_VAR_rds_database_name: ${{ secrets.DB_NAME }}
