@@ -11,6 +11,7 @@ on:
 jobs:
   deploy_infrastructure:
     runs-on: ubuntu-latest
+    name: Create Infrastructure the DB
     env:
       TF_VAR_rds_database_name: ${{ secrets.DB_NAME }}
       TF_VAR_rds_user_name: ${{ secrets.DB_USERNAME }}
