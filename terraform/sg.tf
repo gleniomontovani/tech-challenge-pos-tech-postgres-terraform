@@ -1,7 +1,8 @@
-resource "aws_security_group" "sg-rds" {
+resource "aws_security_group" "sg_tech_challenge_rds" {
   name        = "SG-${var.projectName}-rds"
   description = var.projectName
   vpc_id      = var.vpc_id
+
 
   ingress {
     description = "VPC"
