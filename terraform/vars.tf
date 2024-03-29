@@ -62,6 +62,18 @@ variable "subnet_03_id" {
   default = "subnet-013713840a17f7dbc"
 }
 
+variable "subnet_04_id" {
+  default = "subnet-0bd942a3a3550120f"
+}
+
+variable "subnet_05_id" {
+  default = "subnet-04a69234760025f8e"
+}
+
+variable "subnet_06_id" {
+  default = "subnet-0b84de7e928a9376f"
+}
+
 variable "vpc_cidr_block" {
   default = "172.31.0.0/16"
 }
@@ -70,8 +82,8 @@ variable "vpc_id" {
   default = "vpc-008501f5a531a84b1"
 }
 
-variable "AWSAccount" {
-  default = "211125728576"
+variable "aws_account" {
+  description = "ACCOUNT AWS"
 }
 
 variable "tags" {
