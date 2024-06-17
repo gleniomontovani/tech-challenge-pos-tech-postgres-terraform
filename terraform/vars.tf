@@ -39,7 +39,7 @@ variable "engineRds" {
 }
 
 variable "engineRdsVersion" {
-  default = "13.10"
+  default = "16.3"
 }
 
 variable "minStorage" {
